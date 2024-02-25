@@ -7,4 +7,6 @@ const userSchema = mongoose.Schema({
     date : {type:Date , default:Date.now}
 })
 
-module.exports = mongoose.model('user',userSchema); //user is the collection of database(inotebook)
+const User= mongoose.model('user',userSchema); //user is the collection of database(inotebook)
+User.createIndexes();
+module.exports = User
