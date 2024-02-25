@@ -26,7 +26,7 @@ router.post(
 
     try {
       // Check whether the user with same email exists already
-      let user = await User.findOne({ email: req.body.email });
+      let user = await User.findOne({email:req.body.email });
       if (user) {
         return res.status(400).json({ error: "Sorry the user with the email already exists" });
       }
@@ -57,7 +57,7 @@ router.post(
   });
 
 
-//RPUTE-2 : Authenticate a User using: POST " /api/auth/login". No login required
+//ROUTE-2 : Authenticate a User using: POST " /api/auth/login". No login required
 router.post('/login',[
   body('email','Invalid email').isEmail(),
   body('password','Password is needed').exists()
