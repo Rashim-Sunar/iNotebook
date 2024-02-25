@@ -51,9 +51,45 @@ router.post(
 
     } catch (error) {
         console.log(error)
-        res.status(400).json({ error: " Some error occured" });
+        res.status(400).json({ error: " Internal error occured" });
     }
+  });
+
+
+//Authenticate a User using: POST " /api/auth/login". No login required
+router.post('/login',[
+  body('email','Invalid email').isEmail(),
+  body('password','Password is needed').exists()
+],async(req,res)=>{
+  const errors = validationResult(req);
+  if(!errors.isEmpty()){
+    return res.status(400).json({errors : errors.array()})
   }
-);
+
+  try {
+    const {email , password} = req.body;
+    const user = await User.findOne({email});   //Check the user with the same email exists
+    if(!user){
+      return res.status(400).json({error : "Try to login with correct credentials"});
+    }
+
+    // Checking the password using bcryptjs
+    const ispasswordCorrect =await bcrypt.compare(password , user.password);
+    if(!ispasswordCorrect){
+      return res.status(400).json({error : "Please try to login with correct credentials"})
+    }
+    const data = {
+      user : {
+        id : user.id
+      }
+    }
+    const authtoken = jwt.sign(data , TOKEN_SECRET);
+    res.json({authtoken})
+  } catch (error) {
+     console.log(error);
+     res.status(400).json({error : "Internal error occured"});
+  }
+});
+
 
 module.exports = router;
