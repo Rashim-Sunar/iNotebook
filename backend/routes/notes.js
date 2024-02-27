@@ -51,7 +51,7 @@ router.put('/updatenotes/:id',fetchUser,async(req,res)=>{
     //Find the note to be updated and then update it
     let note =await Notes.findById(req.params.id)    //req.params.id is the id fetched from /updatenotes/:id<--
     if(!note){
-        return res.status(404).send("Not Found");
+        return res.status(404).send("Note not Found");
     }
 
     if(note.user.toString() !== req.user.id){
@@ -62,9 +62,29 @@ router.put('/updatenotes/:id',fetchUser,async(req,res)=>{
     res.json({note});
     }catch(error){
     console.log(error.message);
-    res.status(400).json({error : "Internal Server Error"});
+    res.status(500).json({error : "Internal Server Error"});
+    }
+});
+
+// ROUTE-4 : Delete a note using : DELETE "api/notes/deltenotes ". Login required.
+router.delete('/deletenotes/:id',fetchUser,async(req,res)=>{
+    // Find the note to be deleted and delete it
+    try{
+    let note = await Notes.findById(req.params.id);
+    if(!note){
+        return res.status(404).send("Note not found")
+    }
+    if(note.user.toString() !== req.user.id){
+        return res.status(401).send("Access denied!");
     }
 
+    }catch(error){
+        console.log(error.message);
+        res.status(500).json({error:"Internal Server Error"});
+    }
+
+    note = await Notes.findByIdAndDelete(req.params.id);
+    res.json({"Success":"Note has been deleted", note : note});
 });
 
 module.exports = router
