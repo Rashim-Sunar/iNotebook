@@ -4,6 +4,7 @@ import './App.css';
 import Navbar from './components/Navbar'
 import Home from './components/Home'
 import About from './components/About'
+import Alert from './components/Alert'
 import NoteState from './context/notes/noteState'
 import {
   BrowserRouter as Router,
@@ -18,6 +19,7 @@ class App extends Component {
       <NoteState>
         <Router>
           <Navbar/>
+          <Alert message="Alert message sent from here"/>
           <div className="container">
           <Routes>
              <Route exact path="/about" element={<About/>}/>
