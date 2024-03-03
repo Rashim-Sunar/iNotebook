@@ -18,10 +18,12 @@ class App extends Component {
       <NoteState>
         <Router>
           <Navbar/>
+          <div className="container">
           <Routes>
              <Route exact path="/about" element={<About/>}/>
              <Route exact path='/' element={ <Home/>}/>      
           </Routes>
+          </div>
         </Router>
       </NoteState>
       </>
