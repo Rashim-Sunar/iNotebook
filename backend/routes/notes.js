@@ -66,7 +66,7 @@ router.put('/updatenotes/:id',fetchUser,async(req,res)=>{
     }
 });
 
-// ROUTE-4 : Delete a note using : DELETE "api/notes/deltenotes ". Login required.
+// ROUTE-4 : Delete a note using : DELETE "api/notes/deletenotes ". Login required.
 router.delete('/deletenotes/:id',fetchUser,async(req,res)=>{
     // Find the note to be deleted and delete it
     try{
@@ -77,16 +77,13 @@ router.delete('/deletenotes/:id',fetchUser,async(req,res)=>{
     if(note.user.toString() !== req.user.id){
         return res.status(401).send("Access denied!");
     }
-
-    ddhdjhfuiyauhdf
-
     }catch(error){
         console.log(error.message);
         res.status(500).json({error:"Internal Server Error"});
     }
 
     note = await Notes.findByIdAndDelete(req.params.id);
-    res.json({"Success":"Note has been deleted", note : note});
+    res.json({"Success":"Note has been deleted", note: note});
 });
 
 module.exports = router
