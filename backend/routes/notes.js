@@ -42,11 +42,15 @@ router.post('/addnotes',fetchUser,[
 router.put('/updatenotes/:id',fetchUser,async(req,res)=>{
     try{
     const {title , description , tag} = req.body;
+     // Validate incoming data
+     if (!title && !description && !tag) {
+        return res.status(400).json({ error: "At least one field (title, description, tag) must be provided for update" });
+    }
     //Create a newNote object
     const newNote = {}
-    if(title){newNote.title = title};
-    if(description){newNote.description = description};
-    if(tag){newNote.tag = tag};
+    if(title){newNote.title = title.toString()};
+    if(description){newNote.description = description.toString()};
+    if(tag){newNote.tag = tag.toString()};
 
     //Find the note to be updated and then update it
     let note =await Notes.findById(req.params.id)    //req.params.id is the id fetched from /updatenotes/:id<--
@@ -62,7 +66,7 @@ router.put('/updatenotes/:id',fetchUser,async(req,res)=>{
     res.json({note});
     }catch(error){
     console.log(error.message);
-    res.status(500).json({error : "Internal Server Error"});
+    res.status(500).json({error : "Internal Server Error for updating"});
     }
 });
 
