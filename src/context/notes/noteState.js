@@ -31,7 +31,6 @@ const noteState = (props) => {
     });
     const json =  await response.json();
     console.log(json);
-
     console.log("Adding a new note");
     const note = {
       "_id": "65dd2fc2ef8342423d0b70d51daf14fd8",
