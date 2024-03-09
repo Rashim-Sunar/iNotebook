@@ -62,22 +62,27 @@ router.post('/login',[
   body('email','Invalid email').isEmail(),
   body('password','Password is needed').exists()
 ],async(req,res)=>{
+  let success = true;
   const errors = validationResult(req);
   if(!errors.isEmpty()){
     return res.status(400).json({errors : errors.array()})
   }
 
   try {
-    const {email , password} = req.body;
+    let {email , password} = req.body;
+    email = email.toString();
+    password = password.toString();
     let user = await User.findOne({email});   //Check the user with the same email exists
     if(!user){
+      success = false;
       return res.status(400).json({error : "Try to login with correct credentials"});
     }
 
     // Checking the password using bcryptjs
     const ispasswordCorrect =await bcrypt.compare(password , user.password);
     if(!ispasswordCorrect){
-      return res.status(400).json({error : "Please try to login with correct credentials"})
+      success = false;
+      return res.status(400).json({success , error : "Please try to login with correct credentials"})
     }
     const data = {
       user : {
@@ -85,7 +90,7 @@ router.post('/login',[
       }
     }
     const authtoken = jwt.sign(data , TOKEN_SECRET);
-    res.json({authtoken})
+    res.json({success,authtoken})
   } catch (error) {
      console.log(error);
      res.status(400).json({error : "Internal error occured"});
