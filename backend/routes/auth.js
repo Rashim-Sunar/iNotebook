@@ -25,21 +25,26 @@ router.post(
     }
 
     try {
+      let success = false;
+      let {name, email, password} = req.body;
+      name = name.toString();
+      email = email.toString();
+      password = password.toString();
       // Check whether the user with same email exists already
-      let user = await User.findOne({email:req.body.email });
+      let user = await User.findOne({email: email});
       if (user) {
-        return res.status(400).json({ error: "Sorry the user with the email already exists" });
+        return res.status(400).json({success, error: "Sorry the user with the email already exists" });
       }
 
       //Adding salt of 10 characters using bcryptjs
       const salt =await bcrypt.genSalt(10);
-      const secpassword =await bcrypt.hash(req.body.password , salt);
+      const secpassword =await bcrypt.hash(password , salt);
       
       //Create a new user if the user doesn't exists already
       user = await User.create({
-        name: req.body.name,
+        name: name,
         password: secpassword,
-        email: req.body.email
+        email: email
       });
 
       const data = {
@@ -48,11 +53,12 @@ router.post(
         }
       }
       const authToken = jwt.sign(data,TOKEN_SECRET)  //signing id using json webtoken
-      res.json({authToken});
+      success = true;
+      res.json({success, authToken});
 
     } catch (error) {
         console.log(error)
-        res.status(400).json({ error: " Internal error occured" });
+        res.status(400).json({error: " Internal error occured" });
     }
   });
 
